@@ -1,0 +1,62 @@
+version: '2.0'
+services:
+  #PHP Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: php-editor/8.0
+    container_name: editor_app
+    restart: unless-stopped
+    tty: true
+    volumes:
+       - ../:/var/www/html/
+       - ./supervisor:/etc/supervisor/conf.d
+    environment:
+      SERVICE_NAME: editor_app
+      SERVICE_TAGS: dev
+    working_dir: /var/www/html/
+    networks:
+      - editor-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  #Nginx Service
+  webserver:
+    image: nginx:alpine
+    container_name: editor_server
+    restart: unless-stopped
+    tty: true
+    volumes:
+       - ../:/var/www/html
+       - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "8082:80"
+      # - "443:443"
+    networks:
+      - editor-network
+
+  #MySQL Service
+  db:
+    image: mysql:latest
+    container_name: editor_db
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - .mysql:/var/lib/mysql
+    ports:
+      - "3309:3306"
+    environment:
+      MYSQL_DATABASE: editor_database
+      MYSQL_USER: editor_user
+      MYSQL_ROOT_PASSWORD: '@editor?!@345'
+      MYSQL_PASSWORD: '@editor?!@345'
+      SERVICE_TAGS: dev
+      SERVICE_NAME: editor_mysql
+    networks:
+      - editor-network
+
+#Docker Networks
+networks:
+  editor-network:
+    driver: bridge
