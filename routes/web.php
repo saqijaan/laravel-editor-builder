@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::get('pages/{page}/edit', [PageController::class,'index'])->name('pages.edit');
+Route::post('pages/{page}/store', [PageController::class,'store'])->name('pages.store');
+Route::get('pages/templates', [PageController::class,'templates'])->name('pages.templates');
