@@ -4,6 +4,16 @@
 
 `cd LaravelCms`
 
+`cp docker .docker -r`
+
+`cd .docker`
+
+`docker-compose up -d`
+
+`docker exec -it editor_app bash`
+
+`php artisan migrate && php artisan db:seed`
+
 `git clone git@github.com:saqijaan/lara-editor.git Editor`
 
 `composer install`
